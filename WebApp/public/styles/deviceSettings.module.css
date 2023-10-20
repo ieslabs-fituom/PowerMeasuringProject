@@ -1,0 +1,17 @@
+.background{
+    background-color: #558FFF ;
+    height: 1000px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.form{
+    background-color: #FFFFFF ;
+    height: 60%;
+    margin-top: 6%;
+    width:75%;
+    border-radius:10px;
+}
