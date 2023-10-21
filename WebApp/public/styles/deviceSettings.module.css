@@ -10,8 +10,65 @@
 
 .form{
     background-color: #FFFFFF ;
+    font-family:'Montserrat';
     height: 60%;
-    margin-top: 6%;
+    margin-top: 8%;
     width:75%;
-    border-radius:10px;
+    border-radius:15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
+
+.topic{
+    font-family:'Montserrat';
+    font-size: calc(0.75rem + 1.3vw);
+    
+}
+
+.dname{
+    width: 90%;
+    
+}
+.idloc{
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+
+.did{
+    width: 42.5%;
+    
+}
+
+.dlocation{
+    width: 42.5%;
+}
+
+.d_ad_cu{
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    
+}
+
+.d_address{
+    width: 47.5%;
+    padding-left: 5%;
+    
+}
+
+.d_current{
+    width: 30%;
+    padding-left: 5%;
+}
+
+.d_current_A{
+    width: 10%;
+    font-size: calc(0.75rem + 0.7vw);
+    padding-top: 3px;
+    padding-left: 1%;
+}
+
