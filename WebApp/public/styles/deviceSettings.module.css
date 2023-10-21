@@ -11,20 +11,25 @@
 .form{
     background-color: #FFFFFF ;
     font-family:'Montserrat';
-    height: 60%;
-    margin-top: 8%;
-    width:75%;
     border-radius:15px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
 }
 
 .topic{
     font-family:'Montserrat';
-    font-size: calc(0.75rem + 1.3vw);
-    
+    font-size: calc(1rem + 0.1vw);
+    color: #585858;
+}
+
+.changeImageButton{
+    font-size: 12px;
+}
+
+.label{
+    font-family:'Montserrat';
+    font-size: 0.8rem;
 }
 
 .dname{
@@ -67,8 +72,9 @@
 
 .d_current_A{
     width: 10%;
-    font-size: calc(0.75rem + 0.7vw);
+    font-size: calc(0.6rem + 0.5vw);
     padding-top: 3px;
     padding-left: 1%;
+    color: #8D9594;
 }
 
