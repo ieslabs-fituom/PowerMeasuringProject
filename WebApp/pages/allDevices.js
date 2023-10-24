@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faListDots, faPlus, faPlusCircle, faSearch, faHospital } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faListDots, faPlus, faPlusCircle, faSearch, faHospital, faCogs } from "@fortawesome/free-solid-svg-icons";
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import navBarStyles from "../public/styles/navbar.module.css";
@@ -17,7 +17,7 @@ export default function AllDevices() {
         <>
             <div className={`${SettingsStyles.background}`}>
                 <HeaderComponent />
-                <div className={`row container mt-4 justify-content-center align-items-center`}>
+                <div className={`row container mt-4 justify-content-center`}>
                     <div className={`col-0 col-md-10 order-2 order-md-1 d-flex flex-column justify-content-center`}>
                         {/* <input className="form-control form-control" type="text" placeholder="Search" /> */}
                         <div className={`row  mt-2 mt-md-0`}>
@@ -56,26 +56,39 @@ export default function AllDevices() {
                                 </div>
                             </div>
                         </div>
-                        
+                        <div className={`row mt-2 justify-content-center`}>
+                            <ButtonComponent text="Filter" disabled={false} onClick={() => { }} icon={faFilter} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'35%'} iconColor={'text-primary'} textColor={'text-primary'} />
+                        </div>
+
                     </div>
-                    
-                    <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column justify-content-center align-items-center`}>
+
+                    <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
+                        <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
-                        <ButtonComponent text="Filter" disabled={false} onClick={() => { }} icon={faFilter} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                     </div>
-                    
+
                 </div>
 
-                <hr className="text-white mt-5 w-75"/>
+                <hr className="text-white mt-5 w-75" />
 
                 <div className={`container d-flex flex-row flex-wrap justify-content-center align-ietms-center mt-3`}>
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                 </div>
-                
+
             </div>
         </>
     )

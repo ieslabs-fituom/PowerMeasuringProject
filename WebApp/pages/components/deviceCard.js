@@ -7,7 +7,9 @@ import { faPlusCircle, faFilter, faPlus, faSave } from "@fortawesome/free-solid-
 const DeviceCard = ({ id, name, location, type, image }) => {
     const styles = {
         width: 280,
-        height: 220
+        height: 220,
+        boxShadow: 'rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px'
+        
     }
     return (
         <div className={`bg-white rounded-3 m-2 p-3`}
