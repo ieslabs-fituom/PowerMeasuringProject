@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faPlus, faPlusCircle, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faListDots, faPlus, faPlusCircle, faSearch, faHospital } from "@fortawesome/free-solid-svg-icons";
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import navBarStyles from "../public/styles/navbar.module.css";
@@ -16,24 +16,57 @@ export default function AllDevices() {
         <>
             <div className={`${SettingsStyles.background}`}>
                 <HeaderComponent />
-                <div className={`row container mt-4`}>
+                <div className={`row container mt-4 justify-content-center align-items-center`}>
                     <div className={`col-0 col-md-10 order-2 order-md-1 d-flex flex-column justify-content-center`}>
                         {/* <input className="form-control form-control" type="text" placeholder="Search" /> */}
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text bg-transparent border-0" id="basic-addon1">
-                                    <FontAwesomeIcon icon={faSearch} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
-                                </span>
+                        <div className={`row  mt-2 mt-md-0`}>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text bg-transparent border-0" id="basic-addon1">
+                                        <FontAwesomeIcon icon={faSearch} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
+                                    </span>
+                                </div>
+                                <input type="text" className="form-control rounded-2" placeholder="Search Device" aria-label="search" aria-describedby="basic-addon1" />
                             </div>
-                            <input type="text" className="form-control rounded-2" placeholder="Search Device" aria-label="search" aria-describedby="basic-addon1" />
                         </div>
-
+                        <div className={`row mt-0`}>
+                            <div className={`col-0 col-md-6  mt-2 mt-md-0`}>
+                                <div className="input-group">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text bg-transparent border-0" id="basic-addon2">
+                                            <FontAwesomeIcon icon={faListDots} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
+                                        </span>
+                                    </div>
+                                    <select className={`form-select`} value={0} placeholder="Select Device Type">
+                                        <option>Select Device Type</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className={`col-0 col-md-6 mt-2 mt-md-0`}>
+                                <div className="input-group">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text bg-transparent border-0" id="basic-addon3">
+                                            <FontAwesomeIcon icon={faHospital} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
+                                        </span>
+                                    </div>
+                                    <select className={`form-select`} value={0} placeholder="Select Device Location">
+                                        <option>Select Device Location</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
+                    
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column justify-content-center align-items-center`}>
-                        <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} bgcolor={'btn-light'} width={'100%'} iconColor={'text-muted'} textColor={'text-muted'} />
-                        <ButtonComponent text="Filter" disabled={false} onClick={() => { }} icon={faFilter} mt={'mt-1'} mb={'mb-1'} bgcolor={'btn-light'} width={'100%'} iconColor={'text-muted'} textColor={'text-muted'}/>
+                        <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        <ButtonComponent text="Filter" disabled={false} onClick={() => { }} icon={faFilter} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                     </div>
+                    
                 </div>
+
+                <hr className="text-white mt-4 w-75"/>
+                
             </div>
         </>
     )
