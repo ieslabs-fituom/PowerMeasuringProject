@@ -10,6 +10,7 @@ import { Router, useRouter } from "next/router";
 
 import ButtonComponent from "./components/button";
 import HeaderComponent from "./components/header";
+import DeviceCard from "./components/deviceCard";
 
 export default function AllDevices() {
     return (
@@ -65,7 +66,15 @@ export default function AllDevices() {
                     
                 </div>
 
-                <hr className="text-white mt-4 w-75"/>
+                <hr className="text-white mt-5 w-75"/>
+
+                <div className={`container d-flex flex-row flex-wrap justify-content-center align-ietms-center mt-3`}>
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'}/>
+                </div>
                 
             </div>
         </>
