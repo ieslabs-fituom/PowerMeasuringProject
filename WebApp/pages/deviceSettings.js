@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload, faSave } from "@fortawesome/free-solid-svg-icons";
 import { Montserrat } from 'next/font/google';
@@ -24,7 +23,7 @@ export default function DeviceSettings() {
             height={120}
             alt="Logo"
             className={`rounded-circle object-fit-cover`} />
-          <ButtonComponent text="Select Image" disabled={false} onClick={() => { }} icon={faUpload} mt={'mt-2'} bgcolor={'btn-primary'} iconColor={'text-white'} />
+          <ButtonComponent text="Select Image" disabled={false} onClick={() => { }} icon={faUpload} mt={'mt-2'} bgcolor={'btn-primary'} iconColor={'text-white'} textColor={'text-white'}/>
           <div className={``}>
             <p className={`${SettingsStyles.topic} text-center fw-bold mt-4`}>Add New Device</p>
           </div>
@@ -57,7 +56,7 @@ export default function DeviceSettings() {
               </div>
             </div>
           </div>
-          <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faSave} mt={'mt-5'} bgcolor={'btn-primary'} iconColor={'text-white'}/>
+          <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faSave} mt={'mt-5'} bgcolor={'btn-primary'} iconColor={'text-white'} textColor={'text-white'}/>
 
         </div>
       </div>
