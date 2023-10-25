@@ -56,9 +56,9 @@ export default function AllDevices() {
                                 </div>
                             </div>
                         </div>
-                        <div className={`row mt-2 justify-content-center`}>
+                        {/* <div className={`row mt-2 justify-content-center`}>
                             <ButtonComponent text="Filter" disabled={false} onClick={() => { }} icon={faFilter} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'35%'} iconColor={'text-primary'} textColor={'text-primary'} />
-                        </div>
+                        </div> */}
 
                     </div>
 
