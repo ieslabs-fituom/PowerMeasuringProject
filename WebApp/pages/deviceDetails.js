@@ -16,6 +16,37 @@ import DeviceCard from "./components/deviceCard";
 
 export default function AllDevices() {
 
+    const [usageData, setUsageData] = useState([
+        {
+            id: 1,
+            date: '2023-01-10',
+            startTime: '10:00:00',
+            endTime: '10:00:00',
+            duration: '01 Hour'
+        },
+        {
+            id: 2,
+            date: '2023-01-10',
+            startTime: '10:00:00',
+            endTime: '10:00:00',
+            duration: '01 Hour'
+        },
+        {
+            id: 3,
+            date: '2023-01-10',
+            startTime: '10:00:00',
+            endTime: '10:00:00',
+            duration: '01 Hour'
+        },
+        {
+            id: 4,
+            date: '2023-01-11',
+            startTime: '10:00:00',
+            endTime: '10:00:00',
+            duration: '01 Hour'
+        }
+    ]);
+
     const CircularProgressBar = ({ percentage, hours }) => {
         return (
             <div style={{ width: 200 }}>
@@ -24,10 +55,10 @@ export default function AllDevices() {
                     text={hours + ' Hours'}
                     strokeWidth={10}
                     styles={{
-                        path: {                           
+                        path: {
                             stroke: `#FF6666`,
-                            strokeLinecap: 'round',            
-                            transition: 'stroke-dashoffset 0.5s ease 0s',                          
+                            strokeLinecap: 'round',
+                            transition: 'stroke-dashoffset 0.5s ease 0s',
                             transformOrigin: 'center center',
                         },
                         trail: {
@@ -49,6 +80,21 @@ export default function AllDevices() {
             </div>
         );
     };
+
+    const tableRow = (rowData) => {
+        const cellStyle = {
+            paddingTop: 15,
+            paddingBottom: 15,
+        }
+        return (
+            <tr className={`text-center`} key={rowData.id}>
+                <td style={cellStyle}>{rowData.date}</td>
+                <td style={cellStyle}>{rowData.startTime}</td>
+                <td style={cellStyle}>{rowData.endTime}</td>
+                <td style={cellStyle}>{rowData.duration}</td>
+            </tr>
+        )
+    }
 
     return (
         <>
@@ -87,6 +133,23 @@ export default function AllDevices() {
                             <CircularProgressBar percentage={50} hours={12} />
                         </div>
                     </div>
+
+                    <div className={`table-responsive-md`} style={{ borderRadius: 10, overflow: 'hidden', marginTop:100 }}>
+                        <table className={`table table-hover`}>
+                            <thead className={``}>
+                                <tr className={'text-center'}>
+                                    <th style={{ backgroundColor: '#EFEFEF' }} className="pt-3 pb-3">Date</th>
+                                    <th style={{ backgroundColor: '#EFEFEF' }} className="pt-3 pb-3">Start Time</th>
+                                    <th style={{ backgroundColor: '#EFEFEF' }} className="pt-3 pb-3">End Time</th>
+                                    <th style={{ backgroundColor: '#EFEFEF' }} className="pt-3 pb-3">Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {usageData.map(tableRow)}
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
 
 
