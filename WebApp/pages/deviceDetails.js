@@ -134,7 +134,11 @@ export default function AllDevices() {
                         </div>
                     </div>
 
-                    <div className={`table-responsive-md`} style={{ borderRadius: 10, overflow: 'hidden', marginTop:100 }}>
+                    <div className={`d-flex flex-row justify-content-end align-items-center`} style={{ marginTop: 100 }}>
+                        <input type="date" className={`form-control w-25 ms-3`} />
+                        <FontAwesomeIcon icon={faFilter} className={`text-white ms-3`} size="1x" />
+                    </div>
+                    <div className={`table-responsive-md mt-3`} style={{ borderRadius: 10, overflow: 'hidden' }}>
                         <table className={`table table-hover`}>
                             <thead className={``}>
                                 <tr className={'text-center'}>
