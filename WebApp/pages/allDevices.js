@@ -28,6 +28,7 @@ export default function AllDevices({userId, email}) {
         const res = await axios.post('/api/getDeviceTypes', {
             userId: userId
         });
+        console.log(res.data.result);
         setDeviceTypes(res.data.result);
     }
 
