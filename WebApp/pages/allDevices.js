@@ -12,7 +12,25 @@ import ButtonComponent from "./components/button";
 import HeaderComponent from "./components/header";
 import DeviceCard from "./components/deviceCard";
 
-export default function AllDevices() {
+import axios from 'axios';
+
+export default function AllDevices({userId, email}) {
+
+    const [deviceTypes, setDeviceTypes] = useState([]);   // This state is used to store device types added by the current user
+
+    // Following hook runs at every render of the screen
+    useEffect(() => {
+        getDeviceTypes();
+    }, []);
+
+    // Function for loading all the device types added by the current user
+    const getDeviceTypes = async () => {
+        const res = await axios.post('/api/getDeviceTypes', {
+            userId: userId
+        });
+        setDeviceTypes(res.data.result);
+    }
+
     return (
         <>
             <div className={`${SettingsStyles.background}`}>
@@ -40,6 +58,9 @@ export default function AllDevices() {
                                     </div>
                                     <select className={`form-select`} value={0} placeholder="Select Device Type">
                                         <option>Select Device Type</option>
+                                        {deviceTypes.map((deviceType) => (
+                                            <option key={deviceType.type_id} value={deviceType.type_id}>{deviceType.type_name}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>
@@ -88,8 +109,13 @@ export default function AllDevices() {
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                 </div>
-
             </div>
         </>
     )
+}
+
+// Following object is used to define default values for the props of the screen. Used for testing purposes
+AllDevices.defaultProps = {
+    userId: 1,
+    email: 'd@d.com'
 }

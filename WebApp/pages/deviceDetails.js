@@ -14,6 +14,8 @@ import ButtonComponent from "./components/button";
 import HeaderComponent from "./components/header";
 import DeviceCard from "./components/deviceCard";
 
+import axios from 'axios';
+
 export default function AllDevices() {
 
     const [usageData, setUsageData] = useState([
@@ -96,6 +98,16 @@ export default function AllDevices() {
         )
     }
 
+    const loadData = async () => {
+        const data = {}
+        axios.get('/api/getDeviceTypes', data)
+            .then((response) => {
+                console.log("Response ",response.data)
+            })
+            .catch((e) => { console.log(e) }
+            )
+    }
+
     return (
         <>
             <div className={`${SettingsStyles.background}`}>
@@ -103,7 +115,7 @@ export default function AllDevices() {
                 <div className={`container mt-5`}>
                     <div className={`d-flex flex-row justify-content-between align-items-center`}>
                         <h1 className={`text-white`}>ECG MACHINE - 001/WD-03</h1>
-                        <ButtonComponent text="Device Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'auto'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        <ButtonComponent text="Device Settings" disabled={false} onClick={() => {loadData()}} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'auto'} iconColor={'text-muted'} textColor={'text-muted'} />
                     </div>
 
                     <hr className="text-white mt-3 w-100" />
@@ -153,10 +165,7 @@ export default function AllDevices() {
                             </tbody>
                         </table>
                     </div>
-
                 </div>
-
-
             </div>
         </>
     );
