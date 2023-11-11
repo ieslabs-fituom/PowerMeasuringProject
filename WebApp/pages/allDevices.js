@@ -2,10 +2,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faListDots, faPlus, faPlusCircle, faSearch, faHospital, faCogs } from "@fortawesome/free-solid-svg-icons";
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
+import Link from "next/link";
 import navBarStyles from "../public/styles/navbar.module.css";
 import SettingsStyles from "../public/styles/deviceSettings.module.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Router, useRouter } from "next/router";
 
 import ButtonComponent from "./components/button";
@@ -14,8 +15,11 @@ import DeviceCard from "./components/deviceCard";
 
 import axios from 'axios';
 
-export default function AllDevices({userId, email}) {
+import { SharedContext } from '../contexts/sharedContext';
 
+export default function AllDevices() {
+
+    const { userId, email, setUserId, setEmail } = useContext(SharedContext);
     const [deviceTypes, setDeviceTypes] = useState([]);   // This state is used to store device types added by the current user
 
     // Following hook runs at every render of the screen
@@ -57,7 +61,7 @@ export default function AllDevices({userId, email}) {
                                             <FontAwesomeIcon icon={faListDots} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                         </span>
                                     </div>
-                                    <select className={`form-select`} value={0} placeholder="Select Device Type">
+                                    <select className={`form-select`} value={0} placeholder="Select Device Type" onChange={(e) => { }}>
                                         <option>Select Device Type</option>
                                         {deviceTypes.map((deviceType) => (
                                             <option key={deviceType.type_id} value={deviceType.type_id}>{deviceType.type_name}</option>
@@ -72,7 +76,7 @@ export default function AllDevices({userId, email}) {
                                             <FontAwesomeIcon icon={faHospital} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                         </span>
                                     </div>
-                                    <select className={`form-select`} value={0} placeholder="Select Device Location">
+                                    <select className={`form-select`} value={0} placeholder="Select Device Location" onChange={(e) => { }}>
                                         <option>Select Device Location</option>
                                     </select>
                                 </div>
@@ -85,8 +89,12 @@ export default function AllDevices({userId, email}) {
                     </div>
 
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
-                        <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
-                        <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        <Link href="/deviceSettings?device=null" style={{width:'100%'}}>
+                            <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        </Link>
+                        <Link href="/deviceSettings?device=null"  style={{width:'100%'}}>
+                            <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        </Link>
                     </div>
 
                 </div>
@@ -113,10 +121,4 @@ export default function AllDevices({userId, email}) {
             </div>
         </>
     )
-}
-
-// Following object is used to define default values for the props of the screen. Used for testing purposes
-AllDevices.defaultProps = {
-    userId: 1,
-    email: 'd@d.com'
 }
