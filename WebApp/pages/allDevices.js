@@ -25,6 +25,7 @@ export default function AllDevices() {
     // Following hook runs at every render of the screen
     useEffect(() => {
         getDeviceTypes();
+        getLocations();
     }, []);
 
     // Function for loading all the device types added by the current user
@@ -34,6 +35,14 @@ export default function AllDevices() {
         });
         console.log(res.data.result);
         setDeviceTypes(res.data.result);
+    }
+
+    const getLocations = async () => {
+        const res = await axios.post('/api/getLocations', {
+            
+        });
+        console.log(res.data.result);
+        getLocations(res.data.result);
     }
 
     return (
