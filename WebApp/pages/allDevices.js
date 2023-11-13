@@ -23,11 +23,14 @@ export default function AllDevices() {
     const { userId, email, setUserId, setEmail } = useContext(SharedContext);
     const [deviceTypes, setDeviceTypes] = useState([]);   // This state is used to store device types added by the current user
     const [locations, setLocations] = useState([]);   // This state is used to store locations added by the current user
+    const [devices, setDevices] = useState([]);   // This state is used to store devices added by the current user
+    const [processedDevices, setProcessedDevices] = useState([]);   // This state is used to store devices with the relevant type and location
 
     // Following hook runs at every render of the screen
     useEffect(() => {
         getDeviceTypes();
         getLocations();
+        getDevices();
     }, []);
 
     // Function for loading all the device types added by the current user
@@ -39,6 +42,7 @@ export default function AllDevices() {
         setDeviceTypes(res.data.result);
     }
 
+    // Function for loading all the locations added by the current user
     const getLocations = async () => {
         const res = await axios.post('/api/getLocations', {
             userId: userId
@@ -46,6 +50,46 @@ export default function AllDevices() {
         console.log(res.status);
         setLocations(res.data.result);
     }
+
+    // Function for loading all the devices added by the current user
+    const getDevices = async () => {
+        const res = await axios.post('/api/getDevices', {
+            userId: userId
+        });
+        console.log(res.status);
+        setDevices(res.data.result);
+    }
+
+    useEffect(() => {
+        if(devices.length == 0 || deviceTypes.length == 0 || locations.length == 0){
+            return;
+        }
+        
+        console.log("Devices: ", devices);
+        processDevices(devices);
+
+    }, [devices]);
+
+    const processDevices = (devices) => {
+        console.log("Processing devices");
+        console.log(devices);
+        let newProcessedDevices = [];
+        devices.forEach(device => {
+            let deviceType = deviceTypes.find(deviceType => deviceType.type_id == device.device_type);
+            let deviceLocation = locations.find(location => location.location_id == device.device_location);
+            if(deviceType && deviceLocation){
+                newProcessedDevices.push({
+                    device_id: device.device_id,
+                    device_name: device.device_name,
+                    device_type: deviceType.type_name,
+                    device_location: deviceLocation.location_name,
+                    //device_image: deviceType.type_image
+                });
+            }
+        });
+        setProcessedDevices(newProcessedDevices);
+    }
+ 
 
     return (
         <>
@@ -116,6 +160,10 @@ export default function AllDevices() {
                 <hr className="text-white mt-5 w-75" />
 
                 <div className={`container d-flex flex-row flex-wrap justify-content-center align-ietms-center mt-3`}>
+                    {processedDevices.map((device) => (
+                        <DeviceCard id={device.device_id} name={device.device_name} location={device.device_location} image={'/images/sample_device.jpg'} type={device.device_type} key={device.device_id}/>  
+                    ))}
+                    {/* <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
@@ -129,8 +177,7 @@ export default function AllDevices() {
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
+                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} /> */}
                 </div>
             </div>
         </>
