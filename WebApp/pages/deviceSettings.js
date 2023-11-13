@@ -22,7 +22,7 @@ export default function DeviceSettings() {
   const { userId, setUserId } = useContext(SharedContext);
   const [isNewDevice, setIsNewDevice] = useState(false);
   const [deviceTypes, setDeviceTypes] = useState([]);
-  const [deviceLocations, setDeviceLocations] = useState([]);
+  const [locations, setLocations] = useState([]);
 
   // States for device details
   const [deviceName, setDeviceName] = useState('');
@@ -41,6 +41,7 @@ export default function DeviceSettings() {
     }
 
     getDeviceTypes();
+    getLocations();
   }, []);
 
   // Function for loading all the device types added by the current user
@@ -51,6 +52,14 @@ export default function DeviceSettings() {
     console.log(res.data.result);
     setDeviceTypes(res.data.result);
   }
+
+  const getLocations = async () => {
+    const res = await axios.post('/api/getLocations', {
+        userId: userId
+    });
+    console.log(res.status);
+    setLocations(res.data.result);
+}
 
   const saveDevice = async () => {
 
@@ -91,7 +100,7 @@ export default function DeviceSettings() {
               <label className={`form-label mt-5 ${SettingsStyles.label}`}>Device Location</label>
               <select className={`form-select`} value={0} placeholder="Select Device Location" onChange={(event) => {setDeviceLocation(event.target.value)}}>
                 <option>Select Device Location</option>
-                {deviceLocations.map((location) => (
+                {locations.map((location) => (
                   <option key={location.location_id} value={location.location_id}>{location.location_name}</option>
                 ))}
               </select>
