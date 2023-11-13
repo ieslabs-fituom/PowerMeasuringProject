@@ -2,10 +2,20 @@ import excuteQuery from '../../db'
 
 export default async (req, res) => {
     try {
-        console.log("Request: ", req.body.userId)
+        let queryType = req.body.queryType; // 1 for get device types by type_id, 2 for get device_types by user
+        let query = '';
+        let values = [];
+        if (queryType == 1) {
+            query = 'SELECT * FROM device_type WHERE type_id = ?';
+            values = [req.body.typeId];
+        }
+        else if (queryType == 2) {
+            query = 'SELECT * FROM device_type WHERE user = ?';
+            values = [req.body.userId];
+        }
         const result = await excuteQuery({
-            query: 'SELECT * FROM device_type WHERE user = ?',
-            values: [req.body.userId],
+            query: query,
+            values: values,
         });
         console.log("Result: ",result)
         res.status(200).json({ result })

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusCircle, faFilter, faPlus, faSave } from "@fortawesome/free-solid-svg-icons";
 
-const DeviceCard = ({ id, name, location, type, image }) => {
+const DeviceCard = ({ id, name, location, type, image, onClick }) => {
     const styles = {
         width: 280,
         height: 220,
@@ -13,7 +13,8 @@ const DeviceCard = ({ id, name, location, type, image }) => {
     }
     return (
         <div className={`bg-white rounded-3 m-2 p-3`}
-            style={styles}>
+            style={styles}
+            onClick={onClick}>
             <Image
                 src={image}
                 width={243}

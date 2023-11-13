@@ -41,6 +41,7 @@ export default function AllDevices() {
     // Function for loading all the device types added by the current user
     const getDeviceTypes = async () => {
         const res = await axios.post('/api/getDeviceTypes', {
+            queryType: 2,
             userId: userId
         });
         console.log(res.status);
@@ -50,6 +51,7 @@ export default function AllDevices() {
     // Function for loading all the locations added by the current user
     const getLocations = async () => {
         const res = await axios.post('/api/getLocations', {
+            queryType: 2,
             userId: userId
         });
         console.log(res.status);
@@ -59,6 +61,7 @@ export default function AllDevices() {
     // Function for loading all the devices added by the current user
     const getDevices = async () => {
         const res = await axios.post('/api/getDevices', {
+            queryType: 2,
             userId: userId
         });
         console.log(res.status);
@@ -103,10 +106,10 @@ export default function AllDevices() {
             return;
         }
 
-        if(selectedDeviceType == 0 && selectedDeviceLocation == 0 && searchText == ''){
+        if (selectedDeviceType == 0 && selectedDeviceLocation == 0 && searchText == '') {
             processDevices(devices);
             return;
-        }else{
+        } else {
             filterDevices(devices, selectedDeviceType, selectedDeviceLocation, searchText);
         }
     }, [selectedDeviceType, selectedDeviceLocation, searchText]);
@@ -114,14 +117,14 @@ export default function AllDevices() {
     // Function for filtering devices based on device type and location and device naem
     const filterDevices = (devices, selectedDeviceType, selectedDeviceLocation, searchText) => {
         let newProcessedDevices = [];
-        
+
         // Here while looping through devices, we are checking whether the device type and location matches with the selected ones. Search text should also be a substring from start of the device_name
         // If the selected type or location is 0, then we are not filtering based on that parameter
         devices.forEach(device => {
             let deviceType = deviceTypes.find(deviceType => deviceType.type_id == device.device_type);
             let deviceLocation = locations.find(location => location.location_id == device.device_location);
             if (deviceType && deviceLocation) {
-                if((selectedDeviceType == 0 || deviceType.type_id == selectedDeviceType) && (selectedDeviceLocation == 0 || deviceLocation.location_id == selectedDeviceLocation) && (searchText == '' || device.device_name.toLowerCase().startsWith(searchText.toLowerCase()))){
+                if ((selectedDeviceType == 0 || deviceType.type_id == selectedDeviceType) && (selectedDeviceLocation == 0 || deviceLocation.location_id == selectedDeviceLocation) && (searchText == '' || device.device_name.toLowerCase().startsWith(searchText.toLowerCase()))) {
                     newProcessedDevices.push({
                         device_id: device.device_id,
                         device_name: device.device_name,
@@ -133,9 +136,7 @@ export default function AllDevices() {
             }
         });
 
-        console.log("Filtered devices: ", newProcessedDevices);
         setProcessedDevices(newProcessedDevices);
-
     }
 
 
@@ -153,8 +154,8 @@ export default function AllDevices() {
                                         <FontAwesomeIcon icon={faSearch} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                     </span>
                                 </div>
-                                <input type="text" className="form-control rounded-2" placeholder="Search Device" aria-label="search" aria-describedby="basic-addon1" 
-                                    value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
+                                <input type="text" className="form-control rounded-2" placeholder="Search Device" aria-label="search" aria-describedby="basic-addon1"
+                                    value={searchText} onChange={(e) => setSearchText(e.target.value)} />
                             </div>
                         </div>
                         <div className={`row mt-0`}>
@@ -165,7 +166,7 @@ export default function AllDevices() {
                                             <FontAwesomeIcon icon={faListDots} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                         </span>
                                     </div>
-                                    <select className={`form-select`} value={selectedDeviceType} placeholder="Select Device Type" onChange={(e) => {setSelectedDeviceType(e.target.value)}}>
+                                    <select className={`form-select`} value={selectedDeviceType} placeholder="Select Device Type" onChange={(e) => { setSelectedDeviceType(e.target.value) }}>
                                         <option value={0}>Select Device Type</option>
                                         {deviceTypes.map((deviceType) => (
                                             <option key={deviceType.type_id} value={deviceType.type_id}>{deviceType.type_name}</option>
@@ -180,7 +181,7 @@ export default function AllDevices() {
                                             <FontAwesomeIcon icon={faHospital} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                         </span>
                                     </div>
-                                    <select className={`form-select`} value={selectedDeviceLocation} placeholder="Select Device Location" onChange={(e) => {setSelectedDeviceLocation(e.target.value)}}>
+                                    <select className={`form-select`} value={selectedDeviceLocation} placeholder="Select Device Location" onChange={(e) => { setSelectedDeviceLocation(e.target.value) }}>
                                         <option value={0}>Select Device Location</option>
                                         {locations.map((location) => (
                                             <option key={location.location_id} value={location.location_id}>{location.location_name}</option>
@@ -210,23 +211,15 @@ export default function AllDevices() {
 
                 <div className={`container d-flex flex-row flex-wrap justify-content-center align-ietms-center mt-3`}>
                     {processedDevices.map((device) => (
-                        <DeviceCard id={device.device_id} name={device.device_name} location={device.device_location} image={'/images/sample_device.jpg'} type={device.device_type} key={device.device_id} />
+                        <Link href={`/deviceDetails?device=${device.device_id}`} style={{ textDecoration: 'none', color: '#000' }} key={device.device_id}>
+                            <DeviceCard id={device.device_id}
+                                name={device.device_name}
+                                location={device.device_location}
+                                image={'/images/sample_device.jpg'}
+                                type={device.device_type}
+                                onClick={() => console.log(device.device_name)} />
+                        </Link>
                     ))}
-                    {/* <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
-                    <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} /> */}
                 </div>
             </div>
         </>

@@ -7,7 +7,7 @@ import Image from 'next/image';
 import navBarStyles from "../public/styles/navbar.module.css";
 import SettingsStyles from "../public/styles/deviceSettings.module.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Router, useRouter } from "next/router";
 
 import ButtonComponent from "./components/button";
@@ -16,8 +16,18 @@ import DeviceCard from "./components/deviceCard";
 
 import axios from 'axios';
 
-export default function AllDevices() {
+import { SharedContext } from '../contexts/sharedContext';
 
+
+export default function AllDevices({device}) {
+
+    const router = useRouter();
+    const { userId, email, setUserId, setEmail } = useContext(SharedContext);
+    const [deviceID, setDeviceID] = useState('');
+    const [deviceName, setDeviceName] = useState('');
+    const [deviceType, setDeviceType] = useState('');
+    const [deviceLocation, setDeviceLocation] = useState('');
+    const [deviceThreshold, setDeviceThreshold] = useState(0);
     const [usageData, setUsageData] = useState([
         {
             id: 1,
@@ -49,6 +59,52 @@ export default function AllDevices() {
         }
     ]);
 
+    // Following hook runs at every render of the screen
+    useEffect(() => {
+        setDeviceID(device);
+        getDeviceDetails(device);
+    }, []);
+
+    // Function to load device details using the device id
+    const getDeviceDetails = async (device) => {
+        const res = await axios.post('/api/getDevices', {
+            queryType: 1,
+            deviceId: device
+        });
+        console.log(res.data.result);
+        const deviceDetails = res.data.result[0];
+        setDeviceName(deviceDetails.device_name);
+        setDeviceType(deviceDetails.device_type);
+        setDeviceLocation(deviceDetails.device_location);
+        setDeviceThreshold(deviceDetails.device_threshold);
+
+        getDeviceTypeDetails(deviceDetails.device_type);
+        getDeviceLocationDetails(deviceDetails.device_location);
+    }
+
+    // Function to load device type details using the device type id
+    const getDeviceTypeDetails = async (typeId) => {
+        const res = await axios.post('/api/getDeviceTypes', {
+            queryType: 1,
+            typeId: typeId
+        });
+        console.log(res.data.result);
+        const deviceTypeDetails = res.data.result[0];
+        setDeviceType(deviceTypeDetails.type_name);
+    }
+
+    // Function to load device location details using the device location id
+    const getDeviceLocationDetails = async (locationId) => {
+        const res = await axios.post('/api/getLocations', {
+            queryType: 1,
+            locationId: locationId
+        });
+        console.log(res.data.result);
+        const deviceLocationDetails = res.data.result[0];
+        setDeviceLocation(deviceLocationDetails.location_name);
+    }
+
+    // This is the wrapper around the circular progress bar
     const CircularProgressBar = ({ percentage, hours }) => {
         return (
             <div style={{ width: 200 }}>
@@ -83,6 +139,7 @@ export default function AllDevices() {
         );
     };
 
+    // This is used to style a table row
     const tableRow = (rowData) => {
         const cellStyle = {
             paddingTop: 15,
@@ -98,24 +155,14 @@ export default function AllDevices() {
         )
     }
 
-    const loadData = async () => {
-        const data = {}
-        axios.get('/api/getDeviceTypes', data)
-            .then((response) => {
-                console.log("Response ",response.data)
-            })
-            .catch((e) => { console.log(e) }
-            )
-    }
-
     return (
         <>
             <div className={`${SettingsStyles.background}`}>
                 <HeaderComponent />
                 <div className={`container mt-5`}>
                     <div className={`d-flex flex-row justify-content-between align-items-center`}>
-                        <h1 className={`text-white`}>ECG MACHINE - 001/WD-03</h1>
-                        <ButtonComponent text="Device Settings" disabled={false} onClick={() => {loadData()}} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'auto'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        <h1 className={`text-white`}>{deviceName} - {deviceType} | {deviceLocation}</h1>
+                        <ButtonComponent text="Device Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'auto'} iconColor={'text-muted'} textColor={'text-muted'} />
                     </div>
 
                     <hr className="text-white mt-3 w-100" />
@@ -169,4 +216,15 @@ export default function AllDevices() {
             </div>
         </>
     );
+}
+
+export async function getServerSideProps({ query }) {
+    // Access the 'device' query parameter from the request
+    const device = query.device || 'null';
+
+    return {
+        props: {
+            device,
+        },
+    };
 }
