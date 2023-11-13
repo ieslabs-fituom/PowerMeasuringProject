@@ -3,6 +3,7 @@ import { faFilter, faListDots, faPlus, faPlusCircle, faSearch, faHospital, faCog
 import { Montserrat } from 'next/font/google';
 import Image from 'next/image';
 import Link from "next/link";
+import ErrorPage from 'next/error'
 import navBarStyles from "../public/styles/navbar.module.css";
 import SettingsStyles from "../public/styles/deviceSettings.module.css";
 
@@ -21,6 +22,7 @@ export default function AllDevices() {
 
     const { userId, email, setUserId, setEmail } = useContext(SharedContext);
     const [deviceTypes, setDeviceTypes] = useState([]);   // This state is used to store device types added by the current user
+    const [locations, setLocations] = useState([]);   // This state is used to store locations added by the current user
 
     // Following hook runs at every render of the screen
     useEffect(() => {
@@ -33,16 +35,16 @@ export default function AllDevices() {
         const res = await axios.post('/api/getDeviceTypes', {
             userId: userId
         });
-        console.log(res.data.result);
+        console.log(res.status);
         setDeviceTypes(res.data.result);
     }
 
     const getLocations = async () => {
         const res = await axios.post('/api/getLocations', {
-            
+            userId: userId
         });
-        console.log(res.data.result);
-        getLocations(res.data.result);
+        console.log(res.status);
+        setLocations(res.data.result);
     }
 
     return (
@@ -87,6 +89,9 @@ export default function AllDevices() {
                                     </div>
                                     <select className={`form-select`} value={0} placeholder="Select Device Location" onChange={(e) => { }}>
                                         <option>Select Device Location</option>
+                                        {locations.map((location) => (
+                                            <option key={location.location_id} value={location.location_id}>{location.location_name}</option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>
@@ -98,10 +103,10 @@ export default function AllDevices() {
                     </div>
 
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
-                        <Link href="/deviceSettings?device=null" style={{width:'100%'}}>
+                        <Link href="/deviceSettings?device=null" style={{width:'100%', textDecoration: 'none'}}>
                             <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
-                        <Link href="/deviceSettings?device=null"  style={{width:'100%'}}>
+                        <Link href="/deviceSettings?device=null"  style={{width:'100%', textDecoration: 'none'}}>
                             <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
                     </div>
