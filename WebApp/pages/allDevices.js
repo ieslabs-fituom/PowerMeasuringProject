@@ -26,6 +26,11 @@ export default function AllDevices() {
     const [devices, setDevices] = useState([]);   // This state is used to store devices added by the current user
     const [processedDevices, setProcessedDevices] = useState([]);   // This state is used to store devices with the relevant type and location
 
+    // Device filter parameters
+    const [selectedDeviceType, setSelectedDeviceType] = useState(0);
+    const [selectedDeviceLocation, setSelectedDeviceLocation] = useState(0);
+    const [searchText, setSearchText] = useState('');
+
     // Following hook runs at every render of the screen
     useEffect(() => {
         getDeviceTypes();
@@ -60,16 +65,18 @@ export default function AllDevices() {
         setDevices(res.data.result);
     }
 
+    // This useEffect executes every time the devices state is updated
     useEffect(() => {
-        if(devices.length == 0 || deviceTypes.length == 0 || locations.length == 0){
+        if (devices.length == 0 || deviceTypes.length == 0 || locations.length == 0) {
             return;
         }
-        
+
         console.log("Devices: ", devices);
         processDevices(devices);
 
     }, [devices]);
 
+    // This function is used to process loaded devices -> Match devices with location and device types
     const processDevices = (devices) => {
         console.log("Processing devices");
         console.log(devices);
@@ -77,7 +84,7 @@ export default function AllDevices() {
         devices.forEach(device => {
             let deviceType = deviceTypes.find(deviceType => deviceType.type_id == device.device_type);
             let deviceLocation = locations.find(location => location.location_id == device.device_location);
-            if(deviceType && deviceLocation){
+            if (deviceType && deviceLocation) {
                 newProcessedDevices.push({
                     device_id: device.device_id,
                     device_name: device.device_name,
@@ -89,7 +96,48 @@ export default function AllDevices() {
         });
         setProcessedDevices(newProcessedDevices);
     }
- 
+
+    // This useEffect executes every time the device type or location or searchText changed
+    useEffect(() => {
+        if (devices.length == 0 || deviceTypes.length == 0 || locations.length == 0) {
+            return;
+        }
+
+        if(selectedDeviceType == 0 && selectedDeviceLocation == 0 && searchText == ''){
+            processDevices(devices);
+            return;
+        }else{
+            filterDevices(devices, selectedDeviceType, selectedDeviceLocation, searchText);
+        }
+    }, [selectedDeviceType, selectedDeviceLocation, searchText]);
+
+    // Function for filtering devices based on device type and location and device naem
+    const filterDevices = (devices, selectedDeviceType, selectedDeviceLocation, searchText) => {
+        let newProcessedDevices = [];
+        
+        // Here while looping through devices, we are checking whether the device type and location matches with the selected ones. Search text should also be a substring from start of the device_name
+        // If the selected type or location is 0, then we are not filtering based on that parameter
+        devices.forEach(device => {
+            let deviceType = deviceTypes.find(deviceType => deviceType.type_id == device.device_type);
+            let deviceLocation = locations.find(location => location.location_id == device.device_location);
+            if (deviceType && deviceLocation) {
+                if((selectedDeviceType == 0 || deviceType.type_id == selectedDeviceType) && (selectedDeviceLocation == 0 || deviceLocation.location_id == selectedDeviceLocation) && (searchText == '' || device.device_name.toLowerCase().startsWith(searchText.toLowerCase()))){
+                    newProcessedDevices.push({
+                        device_id: device.device_id,
+                        device_name: device.device_name,
+                        device_type: deviceType.type_name,
+                        device_location: deviceLocation.location_name,
+                        //device_image: deviceType.type_image
+                    });
+                }
+            }
+        });
+
+        console.log("Filtered devices: ", newProcessedDevices);
+        setProcessedDevices(newProcessedDevices);
+
+    }
+
 
     return (
         <>
@@ -105,7 +153,8 @@ export default function AllDevices() {
                                         <FontAwesomeIcon icon={faSearch} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                     </span>
                                 </div>
-                                <input type="text" className="form-control rounded-2" placeholder="Search Device" aria-label="search" aria-describedby="basic-addon1" />
+                                <input type="text" className="form-control rounded-2" placeholder="Search Device" aria-label="search" aria-describedby="basic-addon1" 
+                                    value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
                             </div>
                         </div>
                         <div className={`row mt-0`}>
@@ -116,8 +165,8 @@ export default function AllDevices() {
                                             <FontAwesomeIcon icon={faListDots} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                         </span>
                                     </div>
-                                    <select className={`form-select`} value={0} placeholder="Select Device Type" onChange={(e) => { }}>
-                                        <option>Select Device Type</option>
+                                    <select className={`form-select`} value={selectedDeviceType} placeholder="Select Device Type" onChange={(e) => {setSelectedDeviceType(e.target.value)}}>
+                                        <option value={0}>Select Device Type</option>
                                         {deviceTypes.map((deviceType) => (
                                             <option key={deviceType.type_id} value={deviceType.type_id}>{deviceType.type_name}</option>
                                         ))}
@@ -131,8 +180,8 @@ export default function AllDevices() {
                                             <FontAwesomeIcon icon={faHospital} size='1x' className={`text-white align-self-center pt-1 pb-1`} />
                                         </span>
                                     </div>
-                                    <select className={`form-select`} value={0} placeholder="Select Device Location" onChange={(e) => { }}>
-                                        <option>Select Device Location</option>
+                                    <select className={`form-select`} value={selectedDeviceLocation} placeholder="Select Device Location" onChange={(e) => {setSelectedDeviceLocation(e.target.value)}}>
+                                        <option value={0}>Select Device Location</option>
                                         {locations.map((location) => (
                                             <option key={location.location_id} value={location.location_id}>{location.location_name}</option>
                                         ))}
@@ -147,10 +196,10 @@ export default function AllDevices() {
                     </div>
 
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
-                        <Link href="/deviceSettings?device=null" style={{width:'100%', textDecoration: 'none'}}>
+                        <Link href="/deviceSettings?device=null" style={{ width: '100%', textDecoration: 'none' }}>
                             <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
-                        <Link href="/deviceSettings?device=null"  style={{width:'100%', textDecoration: 'none'}}>
+                        <Link href="/deviceSettings?device=null" style={{ width: '100%', textDecoration: 'none' }}>
                             <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
                     </div>
@@ -161,7 +210,7 @@ export default function AllDevices() {
 
                 <div className={`container d-flex flex-row flex-wrap justify-content-center align-ietms-center mt-3`}>
                     {processedDevices.map((device) => (
-                        <DeviceCard id={device.device_id} name={device.device_name} location={device.device_location} image={'/images/sample_device.jpg'} type={device.device_type} key={device.device_id}/>  
+                        <DeviceCard id={device.device_id} name={device.device_name} location={device.device_location} image={'/images/sample_device.jpg'} type={device.device_type} key={device.device_id} />
                     ))}
                     {/* <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
                     <DeviceCard id={0} name={'001/WD-3'} location={'THTR-1'} image={'/images/sample_device.jpg'} type={'ECG SCANNER'} />
