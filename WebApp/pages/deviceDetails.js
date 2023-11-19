@@ -99,11 +99,13 @@ export default function AllDevices({ device }) {
         setRecordCount(res.data.result[0]['COUNT(record_id)']);
         //setRecordCount(res.data.result[0]['COUNT(record_id)']);
         generatePagination(currentPage, res.data.result[0]['COUNT(record_id)']);
-        getDeviceUsageDetails(device);
+        getDeviceUsageDetails(device, 1);
     }
 
     // Function to load device usage details using the device id
-    const getDeviceUsageDetails = async (device) => {
+    const getDeviceUsageDetails = async (device, currentPage) => {
+        console.log("Current Page: ", currentPage);
+        console.log("Device: ", device);
         const res = await axios.post('/api/getRecords', {
             deviceId: device,
             page: currentPage
@@ -115,7 +117,7 @@ export default function AllDevices({ device }) {
     // Generate pagination
     const generatePagination = (currentPage, recordCount) => {
         let newPagination = [];
-        recordCount = Math.ceil(recordCount / 50);
+        recordCount = Math.ceil(recordCount / 3);
         if (recordCount <= 10) {
             for (let i = 1; i <= recordCount; i++) {
                 newPagination.push(i);
@@ -179,7 +181,7 @@ export default function AllDevices({ device }) {
         setUsageData([...usageData]);
     }
 
-    
+
     // This is used to get last 30 days data to generate analytics
     const getLast30DaysData = async (device) => {
         // get today
@@ -195,7 +197,7 @@ export default function AllDevices({ device }) {
             deviceId: device,
             givenDate: formattedDate
         });
-        setTodayDurationPercentage(((res.data.todayDurationOnlyHours/24).toFixed(2))*100);
+        setTodayDurationPercentage(((res.data.todayDurationOnlyHours / 24).toFixed(2)) * 100);
         setTodayDuration(res.data.todayDuration);
         setLastSevenDaysDuration(res.data.lastSevenDaysDuration);
         setLastThirtyDaysDuration(res.data.lastThirtyDaysDuration);
@@ -314,13 +316,17 @@ export default function AllDevices({ device }) {
                         {
                             pagination.map((item, index) => {
                                 return (
-                                    <>
+                                    <div key={item} >
                                         {(item == currentPage) ? (
-                                            <span className={`text-dark mx-3`} key={index}>{item}</span>
+                                            <span className={`text-dark mx-3`} style={{cursor:'pointer'}} key={index} >{item}</span>
                                         ) : (
-                                            <span className={`text-white mx-3`} key={index}>{item}</span>
+                                            <span className={`text-white mx-3`} style={{cursor:'pointer'}} key={index} onClick={(index) => {
+                                                console.log(item);
+                                                setCurrentPage(item);
+                                                getDeviceUsageDetails(deviceID, item);
+                                            }}>{item}</span>
                                         )}
-                                    </>
+                                    </div>
                                 )
                             })
                         }
