@@ -27,41 +27,28 @@ export default function AllDevices({ device }) {
     const [deviceName, setDeviceName] = useState('');
     const [deviceType, setDeviceType] = useState('');
     const [deviceLocation, setDeviceLocation] = useState('');
+    const [recordCount, setRecordCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pagination, setPagination] = useState([]);
     const [usageData, setUsageData] = useState([
-        {
-            record_id: 1,
-            date: '2023-01-10',
-            startTime: '10:00:00',
-            endTime: '10:00:00',
-            duration: '01 Hour'
-        },
-        {
-            record_id: 2,
-            date: '2023-01-10',
-            startTime: '10:00:00',
-            endTime: '10:00:00',
-            duration: '01 Hour'
-        },
-        {
-            record_id: 3,
-            date: '2023-01-10',
-            startTime: '10:00:00',
-            endTime: '10:00:00',
-            duration: '01 Hour'
-        },
-        {
-            record_id: 4,
-            date: '2023-01-11',
-            startTime: '10:00:00',
-            endTime: '10:00:00',
-            duration: '01 Hour'
-        }
+        // {
+        //     record_id: 1,
+        //     date: '2023-01-10',
+        //     startTime: '10:00:00',
+        //     endTime: '10:00:00',
+        //     duration: '01 Hour'
+        // },
     ]);
+    let [todayDurationPercentage, setTodayDurationPercentage] = useState(0);
+    const [todayDuration, setTodayDuration] = useState(0);
+    const [lastSevenDaysDuration, setLastSevenDaysDuration] = useState(0);
+    const [lastThirtyDaysDuration, setLastThirtyDaysDuration] = useState(0);
 
     // Following hook runs at every render of the screen
     useEffect(() => {
         setDeviceID(device);
         getDeviceDetails(device);
+        getLast30DaysData(device);
     }, []);
 
     // Function to load device details using the device id
@@ -78,7 +65,7 @@ export default function AllDevices({ device }) {
 
         getDeviceTypeDetails(deviceDetails.device_type);
         getDeviceLocationDetails(deviceDetails.device_location);
-        getDeviceUsageDetails(device);
+        getDeviceRecordsCount(device);
     }
 
     // Function to load device type details using the device type id
@@ -103,13 +90,47 @@ export default function AllDevices({ device }) {
         setDeviceLocation(deviceLocationDetails.location_name);
     }
 
-    // Function to load device usage details using the device id
-    const getDeviceUsageDetails = async (device) => {
-        const res = await axios.post('/api/getRecords', {
+    // Function to load records count for the device
+    const getDeviceRecordsCount = async (device) => {
+        const res = await axios.post('/api/getRecordCount', {
             deviceId: device
         });
         console.log(res.data.result);
+        setRecordCount(res.data.result[0]['COUNT(record_id)']);
+        //setRecordCount(res.data.result[0]['COUNT(record_id)']);
+        generatePagination(currentPage, res.data.result[0]['COUNT(record_id)']);
+        getDeviceUsageDetails(device);
+    }
+
+    // Function to load device usage details using the device id
+    const getDeviceUsageDetails = async (device) => {
+        const res = await axios.post('/api/getRecords', {
+            deviceId: device,
+            page: currentPage
+        });
+        //console.log(res.data.result);
         processUsageData(res.data.result);
+    }
+
+    // Generate pagination
+    const generatePagination = (currentPage, recordCount) => {
+        let newPagination = [];
+        recordCount = Math.ceil(recordCount / 50);
+        if (recordCount <= 10) {
+            for (let i = 1; i <= recordCount; i++) {
+                newPagination.push(i);
+            }
+        } else {
+            newPagination.push(1, 2, 3, 4);
+            newPagination.push('. . .');
+            if (currentPage > 4 && currentPage < recordCount - 3) {
+                newPagination.push(currentPage - 1, currentPage, currentPage + 1);
+                newPagination.push('. . .');
+            }
+            //newPagination.push(currentPage-1, currentPage, currentPage+1);
+            newPagination.push(recordCount - 2, recordCount - 1, recordCount);
+        }
+        setPagination([...newPagination]);
     }
 
     // Function to process the device usage data
@@ -127,8 +148,6 @@ export default function AllDevices({ device }) {
 
             // Format the duration
             const formattedDuration = `${hours} Hours ${minutes} minutes`;
-
-            console.log(formattedDuration, startTime, endTime); // Output: "1 Hours 0 minutes"
 
             record.duration = formattedDuration;
 
@@ -157,9 +176,29 @@ export default function AllDevices({ device }) {
             record.date = startDate;
         });
 
-        setUsageData(usageData);
+        setUsageData([...usageData]);
+    }
 
+    
+    // This is used to get last 30 days data to generate analytics
+    const getLast30DaysData = async (device) => {
+        // get today
+        const today = new Date();
 
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+        const day = String(today.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        console.log(formattedDate);
+        const res = await axios.post('/api/getAnalyticsData', {
+            deviceId: device,
+            givenDate: formattedDate
+        });
+        setTodayDurationPercentage(((res.data.todayDurationOnlyHours/24).toFixed(2))*100);
+        setTodayDuration(res.data.todayDuration);
+        setLastSevenDaysDuration(res.data.lastSevenDaysDuration);
+        setLastThirtyDaysDuration(res.data.lastThirtyDaysDuration);
     }
 
     // This is the wrapper around the circular progress bar
@@ -168,7 +207,7 @@ export default function AllDevices({ device }) {
             <div style={{ width: 200 }}>
                 <CircularProgressbar
                     value={percentage}
-                    text={hours + ' Hours'}
+                    text={hours}
                     strokeWidth={10}
                     styles={{
                         path: {
@@ -184,7 +223,7 @@ export default function AllDevices({ device }) {
                         },
                         text: {
                             fill: '#fff',
-                            fontSize: '16px',
+                            fontSize: '10px',
                             fontFamily: 'Montserrat',
                             fontWeight: 'bold',
                         },
@@ -231,15 +270,15 @@ export default function AllDevices({ device }) {
                                 style={{ width: 300, height: 100, boxShadow: 'rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px' }}>
                                 <h6 className="text-secondary">Last 7 Days</h6>
                                 <div className={`d-flex flex-row justify-content-between align-items-center`}>
-                                    <h3 style={{ color: '#21055C' }} className={`fw-bold mt-2`}>40 Hours</h3>
+                                    <h3 style={{ color: '#21055C' }} className={`fw-bold mt-2`}>{lastSevenDaysDuration}</h3>
                                     <FontAwesomeIcon icon={faCalendarWeek} className={`text-success`} size="2x" />
                                 </div>
                             </div>
                             <div className={`bg-white rounded-4 mt-4 d-flex flex-column ps-3 pt-2 pe-3`}
                                 style={{ width: 300, height: 100, boxShadow: 'rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px' }}>
-                                <h6 className="text-secondary">Last 7 Days</h6>
+                                <h6 className="text-secondary">Last 30 Days</h6>
                                 <div className={`d-flex flex-row justify-content-between align-items-center`}>
-                                    <h3 style={{ color: '#21055C' }} className={`fw-bold mt-2`}>40 Hours</h3>
+                                    <h3 style={{ color: '#21055C' }} className={`fw-bold mt-2`}>{lastThirtyDaysDuration}</h3>
                                     <FontAwesomeIcon icon={faCalendarAlt} className={`text-danger`} size="2x" />
                                 </div>
                             </div>
@@ -247,7 +286,7 @@ export default function AllDevices({ device }) {
                         </div>
                         <div className={`col-0 col-md-6 d-flex flex-column justify-content-center align-items-center mt-3 mt-md-0`}>
                             <h4 className={`text-white fw-bold mb-4`}>Today</h4>
-                            <CircularProgressBar percentage={50} hours={12} />
+                            <CircularProgressBar percentage={todayDurationPercentage} hours={todayDuration} />
                         </div>
                     </div>
 
@@ -269,6 +308,23 @@ export default function AllDevices({ device }) {
                                 {usageData.map(tableRow)}
                             </tbody>
                         </table>
+                    </div>
+                    <div className={`d-flex flex-row justify-content-center align-items-center`}>
+                        <span className={`text-white mx-3`}>Prev</span>
+                        {
+                            pagination.map((item, index) => {
+                                return (
+                                    <>
+                                        {(item == currentPage) ? (
+                                            <span className={`text-dark mx-3`} key={index}>{item}</span>
+                                        ) : (
+                                            <span className={`text-white mx-3`} key={index}>{item}</span>
+                                        )}
+                                    </>
+                                )
+                            })
+                        }
+                        <span className={`text-white mx-3`}>Next</span>
                     </div>
                 </div>
             </div>
