@@ -197,7 +197,7 @@ export default function AllDevices() {
                     </div>
 
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
-                        <Link href="/deviceSettings?device=null" style={{ width: '100%', textDecoration: 'none' }}>
+                        <Link href="/settings" style={{ width: '100%', textDecoration: 'none' }}>
                             <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
                         <Link href="/deviceSettings?device=null" style={{ width: '100%', textDecoration: 'none' }}>

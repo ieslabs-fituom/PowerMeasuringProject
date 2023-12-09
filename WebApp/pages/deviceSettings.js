@@ -23,7 +23,7 @@ export default function DeviceSettings() {
   const router = useRouter();
   const { device } = router.query;
   const { userId, setUserId } = useContext(SharedContext);
-  const [isNewDevice, setIsNewDevice] = useState(false);
+  const [isNewDevice, setIsNewDevice] = useState(true);
   const [deviceTypes, setDeviceTypes] = useState([]);
   const [locations, setLocations] = useState([]);
 
@@ -153,14 +153,14 @@ export default function DeviceSettings() {
             height={120}
             alt="Logo"
             className={`rounded-circle object-fit-cover`} />
-          <ButtonComponent text="Select Image" disabled={false} onClick={() => { }} icon={faUpload} mt={'mt-2'} bgcolor={'btn-primary'} iconColor={'text-white'} textColor={'text-white'} />
+          {/* <ButtonComponent text="Select Image" disabled={false} onClick={() => { }} icon={faUpload} mt={'mt-2'} bgcolor={'btn-primary'} iconColor={'text-white'} textColor={'text-white'} /> */}
           <div className={``}>
-            <p className={`${SettingsStyles.topic} text-center fw-bold mt-4`}>Add New Device</p>
+            <p className={`${SettingsStyles.topic} text-center fw-bold mt-4`}>{(isNewDevice) ? 'Add New' : 'Update'} Device</p>
           </div>
           <div className={`${SettingsStyles.dname}`}>
             <label className={`form-label mt-2 ${SettingsStyles.label}`}>Device Name</label>
             <input className="form-control form-control" type="text" placeholder="Enter Device Name"
-              value={deviceName} onChange={(event) => setDeviceName(event.target.value)} />
+              value={deviceName} maxLength={20} onChange={(event) => setDeviceName(event.target.value)} />
           </div>
           <div className={`${SettingsStyles.idloc}`}>
             <div className={`${SettingsStyles.did}`}>
