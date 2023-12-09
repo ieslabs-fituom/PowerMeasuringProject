@@ -9,6 +9,7 @@ import SettingsStyles from "../public/styles/deviceSettings.module.css";
 
 import { useState, useEffect, useContext } from "react";
 import { Router, useRouter } from "next/router";
+import Link from 'next/link';
 
 import ButtonComponent from "./components/button";
 import HeaderComponent from "./components/header";
@@ -261,7 +262,9 @@ export default function AllDevices({ device }) {
                 <div className={`container mt-5`}>
                     <div className={`d-flex flex-row justify-content-between align-items-center`}>
                         <h1 className={`text-white`}>{deviceName} - {deviceType} | {deviceLocation}</h1>
-                        <ButtonComponent text="Device Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'auto'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        <Link href={`/deviceSettings?device=${deviceID}`} style={{ textDecoration: 'none' }}>
+                            <ButtonComponent text="Device Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'auto'} iconColor={'text-muted'} textColor={'text-muted'} />
+                        </Link>
                     </div>
 
                     <hr className="text-white mt-3 w-100" />
@@ -318,9 +321,9 @@ export default function AllDevices({ device }) {
                                 return (
                                     <div key={item} >
                                         {(item == currentPage) ? (
-                                            <span className={`text-dark mx-3`} style={{cursor:'pointer'}} key={index} >{item}</span>
+                                            <span className={`text-dark mx-3`} style={{ cursor: 'pointer' }} key={index} >{item}</span>
                                         ) : (
-                                            <span className={`text-white mx-3`} style={{cursor:'pointer'}} key={index} onClick={(index) => {
+                                            <span className={`text-white mx-3`} style={{ cursor: 'pointer' }} key={index} onClick={(index) => {
                                                 console.log(item);
                                                 setCurrentPage(item);
                                                 getDeviceUsageDetails(deviceID, item);
