@@ -17,8 +17,15 @@ export default async (req, res) => {
             query: query,
             values: values,
         });
-        //console.log("Result: ",result)
-        res.status(200).json({ result })
+
+        if(result.error) {
+            console.log(result.error);
+            return res.status(201).json({ error: result.error });
+        } else{
+            console.log(result);
+            return res.status(200).json({ result });
+        }
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ error });
