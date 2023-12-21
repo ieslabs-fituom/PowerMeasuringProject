@@ -3,7 +3,7 @@ import mysql from 'serverless-mysql';
 const db = mysql({
   config: {
     host: 'localhost',
-    port: 3308,
+    port: 3306,
     database: 'power_project',
     user: 'root',
     password: ''
