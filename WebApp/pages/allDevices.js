@@ -44,8 +44,11 @@ export default function AllDevices() {
             queryType: 2,
             userId: userId
         });
-        console.log(res.status);
-        setDeviceTypes(res.data.result);
+        if(res.status == 200){
+            setDeviceTypes(res.data.result);
+        } else{
+            setDeviceTypes([]);
+        }
     }
 
     // Function for loading all the locations added by the current user
@@ -54,8 +57,13 @@ export default function AllDevices() {
             queryType: 2,
             userId: userId
         });
-        console.log(res.status);
-        setLocations(res.data.result);
+        
+        if(res.status == 200){
+            setLocations(res.data.result);
+        } else{
+            setLocations([]);
+        }
+        
     }
 
     // Function for loading all the devices added by the current user
@@ -64,8 +72,13 @@ export default function AllDevices() {
             queryType: 2,
             userId: userId
         });
-        console.log(res.status);
-        setDevices(res.data.result);
+        if(res.status == 200){
+            setDevices(res.data.result);
+        } else{
+            console.log('Error loading devices');
+            setDevices([]);
+        }
+        
     }
 
     // This useEffect executes every time the devices state is updated
@@ -84,19 +97,26 @@ export default function AllDevices() {
         console.log("Processing devices");
         console.log(devices);
         let newProcessedDevices = [];
-        devices.forEach(device => {
-            let deviceType = deviceTypes.find(deviceType => deviceType.type_id == device.device_type);
-            let deviceLocation = locations.find(location => location.location_id == device.device_location);
-            if (deviceType && deviceLocation) {
-                newProcessedDevices.push({
-                    device_id: device.device_id,
-                    device_name: device.device_name,
-                    device_type: deviceType.type_name,
-                    device_location: deviceLocation.location_name,
-                    //device_image: deviceType.type_image
-                });
-            }
-        });
+        console.log('Devices: ', devices);
+        if (devices.length == 0) {
+            return;
+        } else {
+            devices.forEach(device => {
+                let deviceType = deviceTypes.find(deviceType => deviceType.type_id == device.device_type);
+                let deviceLocation = locations.find(location => location.location_id == device.device_location);
+                if (deviceType && deviceLocation) {
+                    newProcessedDevices.push({
+                        device_id: device.device_id,
+                        device_name: device.device_name,
+                        device_type: deviceType.type_name,
+                        device_location: deviceLocation.location_name,
+                        //device_image: deviceType.type_image
+                    });
+                }
+            });
+        }
+
+
         setProcessedDevices(newProcessedDevices);
     }
 
@@ -168,9 +188,10 @@ export default function AllDevices() {
                                     </div>
                                     <select className={`form-select`} value={selectedDeviceType} placeholder="Select Device Type" onChange={(e) => { setSelectedDeviceType(e.target.value) }}>
                                         <option value={0}>Select Device Type</option>
-                                        {deviceTypes.map((deviceType) => (
-                                            <option key={deviceType.type_id} value={deviceType.type_id}>{deviceType.type_name}</option>
-                                        ))}
+                                        {(deviceTypes.length > 0) ? (
+                                            deviceTypes.map((deviceType) => (
+                                                <option key={deviceType.type_id} value={deviceType.type_id}>{deviceType.type_name}</option>
+                                            ))) : null}
                                     </select>
                                 </div>
                             </div>
@@ -183,9 +204,10 @@ export default function AllDevices() {
                                     </div>
                                     <select className={`form-select`} value={selectedDeviceLocation} placeholder="Select Device Location" onChange={(e) => { setSelectedDeviceLocation(e.target.value) }}>
                                         <option value={0}>Select Device Location</option>
-                                        {locations.map((location) => (
-                                            <option key={location.location_id} value={location.location_id}>{location.location_name}</option>
-                                        ))}
+                                        {(locations.length > 0) ? (
+                                            locations.map((location) => (
+                                                <option key={location.location_id} value={location.location_id}>{location.location_name}</option>
+                                            ))) : null}
                                     </select>
                                 </div>
                             </div>
