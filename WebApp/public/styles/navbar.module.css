@@ -1,0 +1,29 @@
+.navbar {
+  height: 120px;
+  width: 100%;
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.logo{
+  height:100%;
+  width: 10%;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+
+}
+@media screen and (max-width: 900px) {
+  .logo {
+     width: 100%;
+  }
+}
+@media screen and (max-width: 600px) {
+  .logo {
+     width: 90%;
+  }
+}
