@@ -12,6 +12,7 @@ import Router from "next/router";
 import HeaderComponent from "./components/header";
 import {app} from '../firebase';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { SharedContext } from '../contexts/sharedContext';
 
 
 
@@ -22,11 +23,13 @@ export default function AllDevices() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
+    const {userID, setUserID} = useContext(SharedContext);
 
     const handleSignin = () =>{
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 setError('Login Success!');
+                setUserID(userCredential.user);
                 Router.push('/allDevices');
             })
             .catch((error) => {
