@@ -5,7 +5,7 @@
 const char* ssid     = "REPLACE_WITH_YOUR_SSID";
 const char* password = "REPLACE_WITH_YOUR_PASSWORD";
 
-const char* server = "http://localhost/DB-api.php";
+const char* server = "http://localhost:3000/api/post/";
 String apikey = "lukepramo221#";
 int device_id = 4;
 
