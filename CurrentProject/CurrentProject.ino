@@ -7,6 +7,7 @@ const char* password = "REPLACE_WITH_YOUR_PASSWORD";
 
 const char* server = "http://localhost/DB-api.php";
 String apikey = "lukepramo221#";
+int device_id = 4;
 
 void setup() {
   Serial.begin(115200);
@@ -32,7 +33,7 @@ void loop() {
     HTTPClient https;
     https.begin(*client, server);
     https.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String Request = "api_key=" + apikey + "&device_id=" + sensorName + "&start_time=" + start_timen + "&end_time" + end_time;
+    String Request = "api_key=" + apikey + "&device_id=" + device_id + "&start_time=" + start_timen + "&end_time" + end_time;
     Serial.println(Request);
     int httpResponseCode = https.POST(Request);
     if (httpResponseCode>0) {
