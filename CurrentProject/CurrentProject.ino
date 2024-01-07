@@ -1,6 +1,7 @@
 #include <PZEM004Tv30.h>
 #include <Wire.h>
 #include <RTClib.h>
+#include <EEPROM.h>
 
 #if !defined(PZEM_RX_PIN) && !defined(PZEM_TX_PIN)
 #define PZEM_RX_PIN 16
@@ -19,10 +20,24 @@ PZEM004Tv30 pzem(PZEM_SERIAL);
 
 RTC_DS3231 rtc;
 
-float th = 10;
+int th;
 
 int stime;
 int tq = 10000; // 10 second delay
+
+void saveThresholdToEEPROM(int val) {
+  int address = 0;
+  EEPROM.put(address, val);
+  EEPROM.commit();
+}
+
+void readThresholdFromEEPROM() {
+  int address = 0;
+  EEPROM.get(address, th);
+
+  Serial.println("Value Fetched (Threshold): ");
+  Serial.print(th);
+}
 
 void OutCurrentRTCTime(){
   DateTime now = rtc.now();
@@ -43,6 +58,7 @@ void OutCurrentRTCTime(){
 
 void setup() {
   Serial.begin(115200);
+  EEPROM.begin(512);
 
   Wire.begin();
 
@@ -53,6 +69,11 @@ void setup() {
     Serial.println("RTC module is not found");
     while (1);
   }
+
+  //saveThresholdToEEPROM(10);
+
+  // Read Threshold
+  readThresholdFromEEPROM();
 
   stime = millis();
 
