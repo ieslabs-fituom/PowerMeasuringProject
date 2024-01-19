@@ -21,36 +21,62 @@ PZEM004Tv30 pzem(PZEM_SERIAL, PZEM_RX_PIN, PZEM_TX_PIN);
 PZEM004Tv30 pzem(PZEM_SERIAL);
 #endif
 
-RTC_DS3231 rtc;
+const char* ssid     = "Galaxy A30s9CCA";
+const char* password = "Isu32357";
 
-int th;
-
-int stime;
-int tq = 10000;  // 10 second delay
-
-// wifi
-const char* ssid = "REPLACE_WITH_YOUR_SSID";
-const char* password = "REPLACE_WITH_YOUR_PASSWORD";
-
-const char* server = "http://localhost:3000/api/post/";
+const char* server = "http://192.168.141.177:3000/api/post/";
 String apikey = "lukepramo221#";
 int device_id = 4;
 
-void saveThresholdToEEPROM(int val) {
+RTC_DS3231 rtc;
+
+float th = 0;
+
+int stime;
+int tq = 500; // 5 second delay
+
+String start_time;
+String end_time;
+
+void setStartTime(){
+  DateTime now = rtc.now();
+  
+  start_time = String(now.year()) + "-" + String(now.month()) + "-" + String(now.day()) + " " + String(now.hour()) + ":" + String(now.minute()) + ":" + String(now.second());
+
+  Serial.println(start_time);
+}
+
+void setEndTime(){
+  DateTime now = rtc.now();
+  
+  end_time = String(now.year()) + "-" + String(now.month()) + "-" + String(now.day()) + " " + String(now.hour()) + ":" + String(now.minute()) + ":" + String(now.second());
+
+  Serial.println(end_time);
+}
+
+void saveThresholdToEEPROM(float val) {
   int address = 0;
   EEPROM.put(address, val);
   EEPROM.commit();
+
+  Serial.println();
+  Serial.print("Saved Threshold in EEPROM: ");
+  Serial.print(val);
+  Serial.println();
 }
 
 void readThresholdFromEEPROM() {
   int address = 0;
   EEPROM.get(address, th);
 
-  Serial.println("Value Fetched (Threshold): ");
+  //th = th / 100;
+
+  Serial.print("Value Fetched (Threshold): ");
   Serial.print(th);
+  Serial.println();
 }
 
-void OutCurrentRTCTime() {
+void OutCurrentRTCTime(){
   DateTime now = rtc.now();
 
   Serial.print(now.year(), DEC);
@@ -67,6 +93,12 @@ void OutCurrentRTCTime() {
   Serial.println();
 }
 
+void showData(float val){
+  Serial.print(val);
+  Serial.print("A  -  ");
+  OutCurrentRTCTime();
+}
+
 void setup() {
   Serial.begin(115200);
   EEPROM.begin(512);
@@ -78,74 +110,100 @@ void setup() {
 
   if (!rtc.begin()) {
     Serial.println("RTC module is not found");
-    while (1)
-      ;
+    while (1);
   }
 
-  //saveThresholdToEEPROM(10);
+  //saveThresholdToEEPROM(2.8);
 
   // Read Threshold
   readThresholdFromEEPROM();
 
-  WIFI.begin(ssid, password);
-  Serial.println("Connecting to WIFI");
-  while (WIFI.status() != WL_CONNECTED) {
-    Serial.println(".");
+  EEPROM.end();
+
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
     delay(500);
+    Serial.print(".");
   }
-  Serial.println("Connection success to : " + WIFI.localIP());
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  
 
   stime = millis();
 
   // Set the RTC to the date & time this sketch was compiled
   //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
+  Serial.println("Device Off.");
 }
+
+bool isHigh = false;
 
 void loop() {
   // Check if the data is valid
-  send_request("150", "2023-01-12", "2023-01-15")
-  /*
   float currentVal = pzem.current();
-  
-  if (isnan(currentVal) && false) {
+
+  if (isnan(currentVal)) {
     Serial.println("Error reading current");
-  } else {
-    if (millis() - stime > tq) {
-      if (currentVal > th) {
-        // upload to the database
-        Serial.print(currentVal);
-      } else {
-        Serial.println(currentVal);
-        OutCurrentRTCTime();
+  }
+  else {
+    if (millis() - stime > tq){
+      if (currentVal > th && isHigh == false){
+        // start
+        Serial.println("\nDevice on!");
+        setStartTime();
+        isHigh = true;        
+      }
+      else if (currentVal < th && isHigh == true){
+        // stop
+        isHigh = false;
+        setEndTime();
+        send_request();
+        Serial.println("Device Off.");        
+      }
+      else if (currentVal > th && isHigh == true){
+        // print values
+        showData(currentVal);
+      }
+      else{
+        // do nothing
+        Serial.print(".");
       }
 
       stime = millis();
-      Serial.println();
-    }
+    }    
   }
-  */
 }
 
-void send_request(String device_id, String start_time, String end_time) {
-  if (WiFi.status() == WL_CONNECTED) {
-    WiFiClientSecure* client = new WiFiClientSecure;
+void send_request(){
+  if(WiFi.status()== WL_CONNECTED){
+    WiFiClientSecure *client = new WiFiClientSecure;
     client->setInsecure();
     HTTPClient https;
     https.begin(*client, server);
     https.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String Request = "api_key=" + apikey + "&device_id=" + device_id + "&start_time=" + start_timen + "&end_time" + end_time;
+    String Request = "api_key=" + apikey + "&device_id=" + device_id + "&start_time=" + start_time + "&end_time" + end_time;
     Serial.println(Request);
     int httpResponseCode = https.POST(Request);
-    
-    if (httpResponseCode > 0) {
+    if (httpResponseCode>0) {
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
-    } else {
+    }
+    else {
       Serial.print("Error code: ");
       Serial.println(httpResponseCode);
     }
     https.end();
-  } else {
+  }
+  else {
     Serial.println("WiFi Disconnected");
   }
 }
