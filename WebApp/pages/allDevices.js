@@ -17,7 +17,7 @@ import DeviceCard from "./components/deviceCard";
 import axios from 'axios';
 
 import { SharedContext } from '../contexts/sharedContext';
-import {app} from '../firebase';
+import { app } from '../firebase';
 import { getAuth } from "firebase/auth";
 
 
@@ -26,18 +26,18 @@ export default function AllDevices() {
 
     const auth = getAuth();
     const user = auth.currentUser;
-    const { userId, setUserId} = useContext(SharedContext);
+    //const { userId, setUserId } = useContext(SharedContext);
+    const [userId, setUserId] = useState(-1);
 
     useEffect(() => {
-        if (userId!=null) {
-            console.log(user)
-        } else {
+        if(localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1){
+            setUserId(localStorage.getItem('uid'));
+        } else{
             Router.push('/signin');
         }
-        console.log("UID", userId)
     }, []);
 
-    
+
     const [deviceTypes, setDeviceTypes] = useState([]);   // This state is used to store device types added by the current user
     const [locations, setLocations] = useState([]);   // This state is used to store locations added by the current user
     const [devices, setDevices] = useState([]);   // This state is used to store devices added by the current user
@@ -61,10 +61,10 @@ export default function AllDevices() {
             queryType: 2,
             userId: userId
         });
-        if(res.status == 200){
+        if (res.status == 200) {
             //console.log("Device Types",res.data.result[0])
             setDeviceTypes(res.data.result);
-        } else{
+        } else {
             setDeviceTypes([]);
         }
     }
@@ -75,13 +75,13 @@ export default function AllDevices() {
             queryType: 2,
             userId: userId
         });
-        
-        if(res.status == 200){
+
+        if (res.status == 200) {
             setLocations(res.data.result);
-        } else{
+        } else {
             setLocations([]);
         }
-        
+
     }
 
     // Function for loading all the devices added by the current user
@@ -90,13 +90,13 @@ export default function AllDevices() {
             queryType: 2,
             userId: userId
         });
-        if(res.status == 200){
+        if (res.status == 200) {
             setDevices(res.data.result);
-        } else{
+        } else {
             console.log('Error loading devices');
             setDevices([]);
         }
-        
+
     }
 
     // This useEffect executes every time the devices state is updated
@@ -238,7 +238,7 @@ export default function AllDevices() {
 
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
                         <Link href="/settings" style={{ width: '100%', textDecoration: 'none' }}>
-                            <ButtonComponent text={userId} disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
+                            <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
                         <Link href="/deviceSettings?device=null" style={{ width: '100%', textDecoration: 'none' }}>
                             <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />

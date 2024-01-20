@@ -34,9 +34,10 @@ export default function AllDevices() {
         
         if(res.status == 200){
            console.log(res.data.result[0].user_id);
-           setUserId(res.data.result[0].user_id);
-        //    Router.push('/allDevices');
-        window.location.href = '/allDevices';
+           localStorage.setItem('uid', res.data.result[0].user_id);
+           //await setUserId(res.data.result[0].user_id);
+           Router.push('/allDevices');
+        
         } else{
             setError("Unsuccessful autentication!");
         }
@@ -61,7 +62,6 @@ export default function AllDevices() {
                     setError("Something went wrong! " + errorMessage);
                 }
             });
-
     }
 
     return (
@@ -72,7 +72,7 @@ export default function AllDevices() {
             <div className={`${SigninStyles.signinContainer}`}>
                 <div className={`${SigninStyles.signinForm}`}>
                     <div className={`${SigninStyles.signinFormHeader}`}>
-                        <h1 className={`${SigninStyles.signinFormHeaderTitle}`}>Sign In {userId}</h1>
+                        <h1 className={`${SigninStyles.signinFormHeaderTitle}`}>Sign In</h1>
                     </div>
                     <div className={`${SigninStyles.signinFormBody}`}>
                         <div className={`${SigninStyles.signinFormError}`}>

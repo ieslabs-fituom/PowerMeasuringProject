@@ -24,12 +24,13 @@ import { getAuth } from "firebase/auth";
 export default function AllDevices({ device }) {
     const auth = getAuth();
     const user = auth.currentUser;
-    const { userId, setUserId} = useContext(SharedContext);
+    //const { userId, setUserId} = useContext(SharedContext);
+    const [userId, setUserId] = useState(-1);
 
     useEffect(() => {
-        if (userId!=null) {
-            console.log(user)
-        } else {
+        if(localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1){
+            setUserId(localStorage.getItem('uid'));
+        } else{
             Router.push('/signin');
         }
     }, []);
