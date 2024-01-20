@@ -18,12 +18,24 @@ import DeviceCard from "./components/deviceCard";
 import axios from 'axios';
 
 import { SharedContext } from '../contexts/sharedContext';
-
+import {app} from '../firebase';
+import { getAuth } from "firebase/auth";
 
 export default function AllDevices({ device }) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    //const { userId, setUserId} = useContext(SharedContext);
+    const [userId, setUserId] = useState(-1);
+
+    useEffect(() => {
+        if(localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1){
+            setUserId(localStorage.getItem('uid'));
+        } else{
+            Router.push('/signin');
+        }
+    }, []);
 
     const router = useRouter();
-    const { userId, email, setUserId, setEmail } = useContext(SharedContext);
     const [deviceID, setDeviceID] = useState('');
     const [deviceName, setDeviceName] = useState('');
     const [deviceType, setDeviceType] = useState('');

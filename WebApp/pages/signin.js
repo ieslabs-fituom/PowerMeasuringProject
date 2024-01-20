@@ -12,6 +12,9 @@ import Router from "next/router";
 import HeaderComponent from "./components/header";
 import {app} from '../firebase';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { SharedContext } from '../contexts/sharedContext';
+import axios, { Axios } from "axios";
+
 
 
 
@@ -22,12 +25,29 @@ export default function AllDevices() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
+    const {userId, setUserId} = useContext(SharedContext);
+
+    const getUserId = async(email) => {
+        const res = await axios.post('/api/getUser', {
+            email: email
+        });
+        
+        if(res.status == 200){
+           console.log(res.data.result[0].user_id);
+           localStorage.setItem('uid', res.data.result[0].user_id);
+           //await setUserId(res.data.result[0].user_id);
+           Router.push('/allDevices');
+        
+        } else{
+            setError("Unsuccessful autentication!");
+        }
+    }
 
     const handleSignin = () =>{
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 setError('Login Success!');
-                Router.push('/allDevices');
+                getUserId(userCredential.user.email);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -42,7 +62,6 @@ export default function AllDevices() {
                     setError("Something went wrong! " + errorMessage);
                 }
             });
-
     }
 
     return (

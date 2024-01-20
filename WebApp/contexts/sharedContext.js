@@ -1,14 +1,14 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
-export const SharedContext = createContext();
+export const SharedContext = createContext("");
 
 export const SharedContextProvider = ({ children }) => {
-    const [userId, setUserId] = useState(1);
-    const [email, setEmail] = useState('d@d.com');
+  const [userId, setUserId] = useState(-1);
+  const [email, setEmail] = useState('d@d.com');
 
-    return (
-        <SharedContext.Provider value={{ userId, setUserId, email, setEmail}}>
-          {children}
-        </SharedContext.Provider>
-      );
+  return (
+    <SharedContext.Provider value={{ userId, setUserId, email, setEmail }}>
+      {children}
+    </SharedContext.Provider>
+  );
 };
