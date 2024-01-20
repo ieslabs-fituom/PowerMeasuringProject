@@ -18,22 +18,23 @@ import axios from 'axios';
 
 import { SharedContext } from '../contexts/sharedContext';
 
-import {app} from '../firebase';
+import { app } from '../firebase';
 import { getAuth } from "firebase/auth";
 
 export default function DeviceSettings() {
 
   const auth = getAuth();
-    const user = auth.currentUser;
-    const { userId, setUserId} = useContext(SharedContext);
+  const user = auth.currentUser;
+  //const { userId, setUserId} = useContext(SharedContext);
+  const [userId, setUserId] = useState(-1);
 
-    useEffect(() => {
-        if (userId!=null) {
-            console.log(user)
-        } else {
-            Router.push('/signin');
-        }
-    }, []);
+  useEffect(() => {
+    if (localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1) {
+      setUserId(localStorage.getItem('uid'));
+    } else {
+      Router.push('/signin');
+    }
+  }, []);
 
   const router = useRouter();
   const { device } = router.query;
@@ -131,7 +132,7 @@ export default function DeviceSettings() {
     }
   }
 
-  const updateDevice = async (deviceID,name, type, location, mac, threshold) => {
+  const updateDevice = async (deviceID, name, type, location, mac, threshold) => {
     if (name == "" || type == 0 || location == 0 || mac == "" || Number(threshold) == 0) {
       toast.warn("Please fill all the fields");
       return;
@@ -213,12 +214,12 @@ export default function DeviceSettings() {
               </div>
             </div>
           </div>
-          <ButtonComponent text="Add Device" disabled={false} onClick={() => { 
-            if (isNewDevice) 
-              addDevice(deviceName, deviceType, deviceLocation, deviceMacAddress, deviceCurrentThreshold) 
+          <ButtonComponent text="Add Device" disabled={false} onClick={() => {
+            if (isNewDevice)
+              addDevice(deviceName, deviceType, deviceLocation, deviceMacAddress, deviceCurrentThreshold)
             else
-              updateDevice(device, deviceName, deviceType, deviceLocation, deviceMacAddress, deviceCurrentThreshold) 
-            }} icon={faSave} mt={'mt-5'} bgcolor={'btn-primary'} iconColor={'text-white'} textColor={'text-white'} />
+              updateDevice(device, deviceName, deviceType, deviceLocation, deviceMacAddress, deviceCurrentThreshold)
+          }} icon={faSave} mt={'mt-5'} bgcolor={'btn-primary'} iconColor={'text-white'} textColor={'text-white'} />
         </div>
         <ToastContainer
           position="bottom-right"
