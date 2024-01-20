@@ -18,11 +18,25 @@ import axios from 'axios';
 
 import { SharedContext } from '../contexts/sharedContext';
 
+import {app} from '../firebase';
+import { getAuth } from "firebase/auth";
+
 export default function DeviceSettings() {
+
+  const auth = getAuth();
+    const user = auth.currentUser;
+    const { userId, setUserId} = useContext(SharedContext);
+
+    useEffect(() => {
+        if (userId!=null) {
+            console.log(user)
+        } else {
+            Router.push('/signin');
+        }
+    }, []);
 
   const router = useRouter();
   const { device } = router.query;
-  const { userId, setUserId } = useContext(SharedContext);
   const [isNewDevice, setIsNewDevice] = useState(true);
   const [deviceTypes, setDeviceTypes] = useState([]);
   const [locations, setLocations] = useState([]);
