@@ -13,6 +13,8 @@ import HeaderComponent from "./components/header";
 import {app} from '../firebase';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { SharedContext } from '../contexts/sharedContext';
+import axios, { Axios } from "axios";
+
 
 
 
@@ -23,14 +25,28 @@ export default function AllDevices() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState("");
-    const {userID, setUserID} = useContext(SharedContext);
+    const {userId, setUserId} = useContext(SharedContext);
+
+    const getUserId = async(email) => {
+        const res = await axios.post('/api/getUser', {
+            email: email
+        });
+        
+        if(res.status == 200){
+           console.log(res.data.result[0].user_id);
+           setUserId(res.data.result[0].user_id);
+        //    Router.push('/allDevices');
+        window.location.href = '/allDevices';
+        } else{
+            setError("Unsuccessful autentication!");
+        }
+    }
 
     const handleSignin = () =>{
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 setError('Login Success!');
-                setUserID(userCredential.user);
-                Router.push('/allDevices');
+                getUserId(userCredential.user.email);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -56,7 +72,7 @@ export default function AllDevices() {
             <div className={`${SigninStyles.signinContainer}`}>
                 <div className={`${SigninStyles.signinForm}`}>
                     <div className={`${SigninStyles.signinFormHeader}`}>
-                        <h1 className={`${SigninStyles.signinFormHeaderTitle}`}>Sign In</h1>
+                        <h1 className={`${SigninStyles.signinFormHeaderTitle}`}>Sign In {userId}</h1>
                     </div>
                     <div className={`${SigninStyles.signinFormBody}`}>
                         <div className={`${SigninStyles.signinFormError}`}>

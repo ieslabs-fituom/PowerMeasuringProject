@@ -34,6 +34,7 @@ export default function AllDevices() {
         } else {
             Router.push('/signin');
         }
+        console.log("UID", userId)
     }, []);
 
     
@@ -61,6 +62,7 @@ export default function AllDevices() {
             userId: userId
         });
         if(res.status == 200){
+            //console.log("Device Types",res.data.result[0])
             setDeviceTypes(res.data.result);
         } else{
             setDeviceTypes([]);
@@ -236,7 +238,7 @@ export default function AllDevices() {
 
                     <div className={`col-0 col-md-2 order-1 order-md-2 d-flex flex-row flex-md-column align-items-center`}>
                         <Link href="/settings" style={{ width: '100%', textDecoration: 'none' }}>
-                            <ButtonComponent text="Settings" disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
+                            <ButtonComponent text={userId} disabled={false} onClick={() => { }} icon={faCogs} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
                         </Link>
                         <Link href="/deviceSettings?device=null" style={{ width: '100%', textDecoration: 'none' }}>
                             <ButtonComponent text="Add Device" disabled={false} onClick={() => { }} icon={faPlus} mt={'mt-1'} mb={'mb-1'} ms={'ms-1'} me={'me-1'} bgcolor={'btn-light'} width={'95%'} iconColor={'text-muted'} textColor={'text-muted'} />
