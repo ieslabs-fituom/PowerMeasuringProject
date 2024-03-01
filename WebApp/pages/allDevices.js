@@ -30,9 +30,9 @@ export default function AllDevices() {
     const [userId, setUserId] = useState(-1);
 
     useEffect(() => {
-        if(localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1){
+        if (localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1) {
             setUserId(localStorage.getItem('uid'));
-        } else{
+        } else {
             Router.push('/signin');
         }
     }, []);
@@ -53,7 +53,7 @@ export default function AllDevices() {
         getDeviceTypes();
         getLocations();
         getDevices();
-    }, []);
+    }, [userId]);
 
     // Function for loading all the device types added by the current user
     const getDeviceTypes = async () => {

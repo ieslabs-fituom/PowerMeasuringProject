@@ -2,7 +2,7 @@ import excuteQuery from '../../db'
 
 export default async (req, res) => {
     try {
-        let queryType = req.body.queryType; // 1 for get deives by device_id, 2 for get devices by user
+        let queryType = req.body.queryType; // 1 for get deives by device_id, 2 for get devices by user, 3 for get devices by mac_address
         let query = '';
         let values = [];
         if (queryType == 1) {
@@ -12,16 +12,20 @@ export default async (req, res) => {
         else if (queryType == 2) {
             query = 'SELECT * FROM device WHERE user = ?';
             values = [req.body.userId];
+        } else if (queryType == 3) {
+            query = 'SELECT device_name, device_threshold FROM device WHERE device_mac = ?';
+            values = [req.body.macAddress];
         }
+
         const result = await excuteQuery({
             query: query,
             values: values,
         });
 
-        if(result.error) {
+        if (result.error) {
             console.log(result.error);
             return res.status(201).json({ error: result.error });
-        } else{
+        } else {
             console.log(result);
             return res.status(200).json({ result });
         }

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import navBarStyles from "../public/styles/navbar.module.css";
 import SettingsStyles from "../public/styles/deviceSettings.module.css";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, use } from "react";
 import { Router, useRouter } from "next/router";
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -31,6 +31,13 @@ export default function DeviceSettings() {
   useEffect(() => {
     if (localStorage.getItem('uid') != null && localStorage.getItem('uid') != -1) {
       setUserId(localStorage.getItem('uid'));
+
+      if (device == 'null') {
+        setIsNewDevice(true);
+      }
+      else {
+        setIsNewDevice(false);
+      }
     } else {
       Router.push('/signin');
     }
@@ -51,16 +58,9 @@ export default function DeviceSettings() {
 
   // Following hook runs at every render of the screen
   useEffect(() => {
-    if (device == 'null') {
-      setIsNewDevice(true);
-    }
-    else {
-      setIsNewDevice(false);
-    }
-
     getDeviceTypes();
     getLocations();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (!isNewDevice) {
@@ -127,6 +127,12 @@ export default function DeviceSettings() {
 
     if (res.status == 200) {
       toast.success("Device added successfully");
+
+      setDeviceName('');
+      setDeviceType(0);
+      setDeviceLocation(0);
+      setDeviceMacAddress('');
+      setDeviceCurrentThreshold('');
     } else {
       toast.error("Error in adding device");
     }
