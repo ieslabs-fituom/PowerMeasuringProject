@@ -13,7 +13,7 @@ export default async (req, res) => {
             query = 'SELECT * FROM device WHERE user = ?';
             values = [req.body.userId];
         } else if (queryType == 3) {
-            query = 'SELECT device_name, device_threshold FROM device WHERE device_mac = ?';
+            query = 'SELECT device_id, device_threshold FROM device WHERE device_mac = ?';
             values = [req.body.macAddress];
         }
 
